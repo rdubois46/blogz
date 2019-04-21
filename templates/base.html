@@ -4,23 +4,29 @@
         <title>
             Ryan's Dirty Little Secrets
         </title>
+
+        <style>
+            .error {
+                color: red;
+            }
+        </style>
     </head>
     <body>
         <div>
-            <h4><a href="./mainpage.html">Main Blog Page</a></h4>
-            <h4><a href="./newpost.html">Add a New Post</a></h4>
+            <h4><a href="/blog">Main Blog Page</a></h4>
+            <h4><a href="/newpost">Add a New Post</a></h4>
         </div>
         <hr>
 
-        {% blockcontent %}
+        {% block content %}
         {% endblock %}
 
     </body>
     <foot>
         <hr>
         <div>
-            <h4><a href="./mainpage.html">Main Blog Page</a></h4>
-            <h4><a href="./newpost.html">Add a New Post</a></h4>
+            <h4><a href="/blog">Main Blog Page</a></h4>
+            <h4><a href="/newpost">Add a New Post</a></h4>
         </div>
     </foot>
 </html>

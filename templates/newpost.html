@@ -1,5 +1,28 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<h2>Make an Entry!</h2>
+<form action="/newpost" method="POST">
+
+    <p>
+      <label> Title:
+        <input type="text" id="title" name="title" value="{{title}}" size="45" />
+      </label>
+    </p>
+
+    {% if title_error %}
+        <p class="error">{{title_error}}</p>
+    {% endif %}
+      
+    <p>
+      <textarea id="content" name="content" rows="10" cols="50" maxlength="5000">{{content}}</textarea>
+    </p>
+
+    {% if content_error %}
+        <p class="error">{{content_error}}</p>
+    {% endif %}
+    
+    <input type="submit" value="Add Entry">
+</form>
 
 {% endblock %}
