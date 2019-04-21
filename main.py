@@ -11,7 +11,7 @@ db = SQLAlchemy(app)
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100))
-    content = db.Column(db.String(5,000))
+    content = db.Column(db.String(5000))
 
     def __init__(self, title):
         self.title = title
@@ -22,8 +22,14 @@ class Post(db.Model):
 
 @app.route("/blog", methods=['POST', 'GET'])
 def index():
-    return render_template("blog.html")
-    
+    post_id = request.args.get("id")
+
+    if post_id:
+        posts = [Post.query.filter_by(id=int(post_id)).first()]
+        return render_template("blog.html", posts=posts)
+
+    posts = Post.query.all()
+    return render_template("blog.html", posts=posts)    
     
 
 @app.route("/newpost", methods=['POST', 'GET'])
@@ -50,11 +56,13 @@ def new_post():
                 title_error=title_error, content_error=content_error)
 
         post = Post(title)
+        post.content = content
         db.session.add(post)
-        db.commit()
+        db.session.commit()
 
-        post = Post.query.filter_by(max(id)).all()
-        return redirect("/blog?=" + str(post.id))
+        post = Post.query(max(id))
+
+        return redirect("/blog?id=" + str(post.id))
     else:
         return render_template('newpost.html')
 
