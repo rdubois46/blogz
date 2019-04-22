@@ -1,8 +1,19 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1><strong>Ryan's Dirty Little Secrets</strong></h1>
-<h2>Recent Posts</h2>
 
+<h1><strong>Ryan's Dirty Little Secrets</strong></h1>
+{% if not single_post %}
+<h2>Recent Posts</h2>
+{% endif %}
+
+{% for post in posts %}
+    <br>
+    <hr>
+    <h2><a href="/blog?id={{post.id}}">{{post.title}}</a></h2>
+    <p>{{post.content}}</p>
+    <hr>
+    <br>
+{% endfor %}
 
 {% endblock %}

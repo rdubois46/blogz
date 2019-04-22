@@ -1,5 +1,6 @@
 from flask import Flask, request, redirect, render_template
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.sql import func
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
@@ -23,13 +24,15 @@ class Post(db.Model):
 @app.route("/blog", methods=['POST', 'GET'])
 def index():
     post_id = request.args.get("id")
+    single_post = False
 
     if post_id:
         posts = [Post.query.filter_by(id=int(post_id)).first()]
-        return render_template("blog.html", posts=posts)
+        single_post = True
+        return render_template("blog.html", posts=posts, single_post=single_post)
 
     posts = Post.query.all()
-    return render_template("blog.html", posts=posts)    
+    return render_template("blog.html", posts=posts, single_post=single_post)    
     
 
 @app.route("/newpost", methods=['POST', 'GET'])
@@ -60,9 +63,10 @@ def new_post():
         db.session.add(post)
         db.session.commit()
 
-        post = Post.query(max(id))
+        #max_logins = db.session.query(db.func.max(User.numLogins)).scalar()
+        post_id = db.session.query(db.func.max(Post.id)).scalar()
 
-        return redirect("/blog?id=" + str(post.id))
+        return redirect("/blog?id=" + str(post_id))
     else:
         return render_template('newpost.html')
 
