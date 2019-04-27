@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h3>Log in to your account!</h3>
+<form action="/login" method="POST">
+    <table>
+        <tr>
+            <td>
+                <label>Username:<input type="text" name="username" size="20" value={{username}} /></label> 
+            </td>
+            <td class="error">
+                {{username_error}}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>Password:<input type="password" name="password" size="20" /></label> 
+            </td>
+            <td class="error">
+                {{password_error}}
+            </td>
+        </tr>
+    </table>
+</form>
+{% endblock %}

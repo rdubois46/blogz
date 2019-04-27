@@ -13,12 +13,25 @@ class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100))
     content = db.Column(db.String(5000))
+    author_id = db.Column(db.Integer, db.ForeignKey['User.id'])
 
-    def __init__(self, title):
+    def __init__(self, title, content, author):
         self.title = title
+        self.content = content
+        self.author = author
 
     def __repr__(self):
         return "<Blog post " + str(self.id) + ": '" + self.title + "'>"
+
+class User(db.model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(20))
+    password = db.Column(db.String(20))
+    blogs = db.relationship('Post', backref="author")
+
+    def __init__(self, username, password)
+        self.username = username
+        self.password = password
 
 
 @app.route("/blog", methods=['POST', 'GET'])
@@ -58,17 +71,31 @@ def new_post():
             return render_template("newpost.html", title=title, content=content, 
                 title_error=title_error, content_error=content_error)
 
-        post = Post(title)
-        post.content = content
+        post = Post(title, content)
         db.session.add(post)
         db.session.commit()
 
-        #max_logins = db.session.query(db.func.max(User.numLogins)).scalar()
-        post_id = db.session.query(db.func.max(Post.id)).scalar()
-
-        return redirect("/blog?id=" + str(post_id))
+        return redirect("/blog?id=" + str(post.id))
     else:
         return render_template('newpost.html')
+
+@app.route("/login", methods = ['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+
+        user = User.query.filter_by(username=username).first()
+
+        if user and user.password == password:
+            session['username'] = username
+            flash("Login Success!")
+            print(session)
+            return redirect('/')
+        else:
+            flash('User password incorrect, or user does not exist!', 'error')
+    return render_template('login.html')
+
 
 
 if __name__ == "__main__":
