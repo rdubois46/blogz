@@ -2,9 +2,8 @@
 
 {% block content %}
 
-<h1><strong>Ryan's Dirty Little Secrets</strong></h1>
 {% if not single_post %}
-<h2>Recent Blog Posts</h2>
+<h2 class="title">Recent Blog Posts</h2>
 {% endif %}
 
 {% for post in posts %}
@@ -12,8 +11,9 @@
     <hr>
     <h2><a href="/blog?id={{post.id}}">{{post.title}}</a></h2>
     <p>{{post.content}}</p>
-    <p><em>Written by: </em><a href="/blog?user={{post.author.id}}">{{post.author.username}}</a></p>
+    <p><em>Author: </em><a href="/blog?user={{post.author.id}}">{{post.author.username}}</a></p>
     <hr>
+    <br>
     <br>
 {% endfor %}
 

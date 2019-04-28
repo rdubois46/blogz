@@ -2,7 +2,7 @@
 <html>
     <head>
         <title>
-            Ryan's Dirty Little Secrets
+            Ryan's BlogHub
         </title>
 
         <style>
@@ -12,16 +12,33 @@
             .success {
                 color: lime;
             }
+            h2.title {
+                font-style: italic; 
+                font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;               
+            }
+            
         </style>
     </head>
     <body>
         <div style="float: left;">
             <a href="/">Home</a> | <a href="/blog">View All Posts</a> | <a href="/newpost">Add a New Post</a>            
         </div>
-        <div style="float: right;">
-            <a href="/login">Log In</a> | <a href="/logout">Log Out</a> 
-        </div>
+
+        {% if current_user %}
+            <div style="float: right;">
+                <em>Logged in as: </em><a href="/blog?user={{current_user.id}}">{{current_user.username}}</a> | <a href="/logout">Log Out</a> 
+            </div>
+        {% else %}
+            <div style="float: right;">
+                <a href="/login">Log In</a> 
+            </div>
+        {% endif %}       
+
+        <br>
         <hr>
+        <h1><strong>Ryan's BlogHub</strong></h1>
+        
+        
 
         {% with messages = get_flashed_messages(with_categories=True) %}
             <ul>
@@ -37,8 +54,17 @@
     </body>
     <foot>
         <hr>
-        <div>
-            <a href="/blog">Main Blog Page</a> | <a href="/newpost">Add a New Post</a>
+        <div style="float: left;">
+            <a href="/">Home</a> | <a href="/blog">View All Posts</a> | <a href="/newpost">Add a New Post</a>            
         </div>
+        {% if current_user %}
+            <div style="float: right;">
+                <em>Logged in as: </em><a href="/blog?user={{current_user.id}}">{{current_user.username}}</a> | <a href="/logout">Log Out</a> 
+            </div>
+        {% else %}
+            <div style="float: right;">
+                <a href="/login">Log In</a> 
+            </div>
+        {% endif %}
     </foot>
 </html>

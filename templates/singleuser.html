@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<br>
 
-<h2>{{user.username}}'s Blog</h2>
+
+<h2 class="title">{{user.username}}'s Blog</h2>
 
 {% for post in user_posts %}
     <br>
