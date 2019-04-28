@@ -1,19 +1,19 @@
-from flask import Flask, request, redirect, render_template
+from flask import Flask, request, redirect, render_template, session, flash
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.sql import func
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://build-a-blog:3343@localhost:8889/build-a-blog'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://blogz:3343@localhost:8889/blogz'
 app.config['SQLALCHEMY_ECHO'] = True
 
 db = SQLAlchemy(app)
+app.secret_key = 'Yt82slo29mw'
 
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100))
     content = db.Column(db.String(5000))
-    author_id = db.Column(db.Integer, db.ForeignKey['User.id'])
+    author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     def __init__(self, title, content, author):
         self.title = title
@@ -23,13 +23,13 @@ class Post(db.Model):
     def __repr__(self):
         return "<Blog post " + str(self.id) + ": '" + self.title + "'>"
 
-class User(db.model):
+class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(20))
+    username = db.Column(db.String(20), unique=True)
     password = db.Column(db.String(20))
-    blogs = db.relationship('Post', backref="author")
+    blogs = db.relationship('Post', backref='author')
 
-    def __init__(self, username, password)
+    def __init__(self, username, password):
         self.username = username
         self.password = password
 
@@ -71,7 +71,8 @@ def new_post():
             return render_template("newpost.html", title=title, content=content, 
                 title_error=title_error, content_error=content_error)
 
-        post = Post(title, content)
+        author = User.query.filter_by(username=session['user']).first()
+        post = Post(title, content, author)
         db.session.add(post)
         db.session.commit()
 
@@ -79,7 +80,13 @@ def new_post():
     else:
         return render_template('newpost.html')
 
-@app.route("/login", methods = ['GET', 'POST'])
+
+#@app.route('/signup', methods = ['POST'])
+#def signup():
+
+
+
+@app.route("/login", methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         username = request.form['username']
@@ -87,14 +94,35 @@ def login():
 
         user = User.query.filter_by(username=username).first()
 
-        if user and user.password == password:
-            session['username'] = username
-            flash("Login Success!")
-            print(session)
-            return redirect('/')
+        if not user:
+            flash('That user does not exist!', 'error')
+            return render_template('login.html')
+
+        if password != user.password:
+            flash('Incorrect password!', 'error')
+            return render_template('login.html', username=username)
+
         else:
-            flash('User password incorrect, or user does not exist!', 'error')
-    return render_template('login.html')
+            session['user'] = username
+            flash("Login Success!", 'success')            
+            return redirect('/newpost')
+    else:
+        return render_template('login.html')
+            
+    
+
+
+#@app.route('/index')
+#def index():
+
+
+@app.route('/logout', methods=['POST'])
+def logout():
+    if session['user']:
+        del session['user']
+    return redirect()
+
+
 
 
 
