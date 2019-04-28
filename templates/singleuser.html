@@ -1,13 +1,11 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<br>
 
-<h1><strong>Ryan's Dirty Little Secrets</strong></h1>
-{% if not single_post %}
-<h2>Recent Blog Posts</h2>
-{% endif %}
+<h2>{{user.username}}'s Blog</h2>
 
-{% for post in posts %}
+{% for post in user_posts %}
     <br>
     <hr>
     <h2><a href="/blog?id={{post.id}}">{{post.title}}</a></h2>
