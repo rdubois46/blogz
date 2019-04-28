@@ -5,7 +5,7 @@
 
 <h2 class="title">{{user.username}}'s Blog</h2>
 
-{% for post in user_posts %}
+{% for post in user_posts | reverse %}
     <br>
     <hr>
     <h2><a href="/blog?id={{post.id}}">{{post.title}}</a></h2>
