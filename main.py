@@ -99,7 +99,7 @@ def signup():
             flash("You must enter a name between 3 and 20 characters.", "error")
             return render_template('signup.html')
         
-        if not password or not 3 < len(username) < 20: 
+        if not password or not 3 < len(password) < 20: 
             flash("You must enter a password between 3 and 20 characters.", "error")
             return render_template('signup.html', username=username)
 
