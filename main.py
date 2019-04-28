@@ -81,8 +81,38 @@ def new_post():
         return render_template('newpost.html')
 
 
-#@app.route('/signup', methods = ['POST'])
-#def signup():
+@app.route('/signup', methods = ['GET', 'POST'])
+def signup():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        verify = request.form['verify']
+
+        if not username or not 3 < len(username) < 20:
+            flash("You must enter a name between 3 and 20 characters.", "error")
+            return render_template('signup.html')
+        
+        if not password or not 3 < len(username) < 20: 
+            flash("You must enter a password between 3 and 20 characters.", "error")
+            return render_template('signup.html', username=username)
+
+        if password != verify:
+            flash("Those passwords do not match.", "error")
+            return render_template('signup.html', username=username)
+
+        new_user = User(username, password)
+        db.session.add(new_user)
+        db.session.commit()        
+        session['user'] = username
+        flash("Signup Success! Welcome!", "success")
+        return redirect('/newpost')
+    else:
+        return render_template('signup.html')
+        
+        
+
+
+
 
 
 
@@ -112,16 +142,24 @@ def login():
     
 
 
-#@app.route('/index')
+#@app.route('/')
 #def index():
 
 
-@app.route('/logout', methods=['POST'])
+@app.route('/logout')
 def logout():
     if session['user']:
         del session['user']
-    return redirect()
+    flash("Logged Out", 'success')
+    return redirect("/blog")
 
+
+@app.before_request
+def require_login():
+    allowed_routes = ['login', 'blog', 'index', 'signup']
+
+    if request.endpoint not in allowed_routes and 'user' not in session:
+        return redirect('/login')
 
 
 
